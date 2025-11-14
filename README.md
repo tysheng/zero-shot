@@ -2,52 +2,45 @@
 
 基于 IDEA-CCNL/Erlangshen-Roberta-330M-NLI 模型的零样本文本分类API服务。
 
-## 构建Docker镜像
+## 构建与运行Docker镜像
 
-由于Hugging Face模型下载可能不稳定，本项目使用本地已下载的模型文件进行Docker构建。有两种方式构建镜像：
+由于Hugging Face模型下载可能不稳定，本项目将本地已下载的模型文件**预置到Docker镜像中**，确保容器可以离线运行。
 
-### 方法一：使用复制脚本（推荐）
+### 构建步骤
 
-1. 首先运行提供的脚本，将模型从本地缓存复制到项目临时目录：
+1. 首先运行预处理脚本，将模型从本地缓存复制到项目目录：
 
 ```bash
 ./copy_model_for_docker.sh
 ```
 
-该脚本会将模型文件从本地 Hugging Face 缓存目录复制到项目中的临时目录。
+这个脚本将：
+- 从您的本地 Hugging Face 缓存中复制模型文件
+- 将文件放入项目的 `model_files` 目录
+- 为您准备好Docker构建所需的所有文件
 
-2. 构建Docker镜像：
-
-```bash
-docker build -t zero-shot-classifier .
-```
-
-### 方法二：直接构建空模型容器，运行时挂载模型目录（推荐）
-
-这种方法最为可靠，直接构建一个不包含模型的容器，然后在运行时通过卷挂载提供模型文件：
-
-1. 构建基础镜像：
+2. 构建Docker镜像（包含模型文件）：
 
 ```bash
 docker build -t zero-shot-classifier .
 ```
 
-2. 运行容器时挂载本地模型目录：
+构建过程使用多阶段构建，确保模型文件被正确打包到镜像中。
+
+3. 运行Docker容器：
 
 ```bash
-# 替换为您实际的模型路径
-MODEL_PATH="$HOME/.cache/huggingface/hub/models--IDEA-CCNL--Erlangshen-Roberta-330M-NLI/snapshots/9ca8de565513d730f6a315337b8b0c0ae7833547"
-
-# 运行容器并挂载模型目录
-docker run -p 8000:8000 -v "$MODEL_PATH:/app/model" zero-shot-classifier
+docker run -p 8000:8000 zero-shot-classifier
 ```
 
-这种方法的优势：
-- 不需要复制模型文件，减少磁盘空间使用
-- 镜像构建更快，更可靠
-- 可以轻松切换不同版本的模型
+### 优势
 
-### 3. 运行Docker容器
+- **完全自包含** - 镜像包含所有需要的模型文件
+- **离线运行** - 不需要在运行时访问外部资源
+- **部署简单** - 不需要额外的卷挂载或环境设置
+- **一致性** - 确保所有环境中使用相同版本的模型
+
+### 运行Docker容器
 
 基本运行命令：
 

@@ -25,15 +25,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+# 先仅复制 requirements.txt 以利用缓存层
+COPY ./requirements.txt .
+
+# 安装 Python 依赖（先于复制其他文件，以便缓存）
+# 设置pip镜像源，加快国内下载速度
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip install --no-cache-dir -r requirements.txt
+
 # 从第一阶段复制模型文件
 COPY --from=model-prep /tmp/model /app/model
 
-# 复制项目代码
+# 复制项目代码（分离依赖安装和代码复制，以便缓存）
 COPY ./app ./app
-COPY ./requirements.txt .
-
-# 安装 Python 依赖
-RUN pip install --no-cache-dir -r requirements.txt
 
 # 设置环境变量，指示模型路径
 ENV MODEL_PATH="/app/model"

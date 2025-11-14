@@ -45,5 +45,8 @@ ENV HF_HOME=/app/model
 # 暴露服务端口
 EXPOSE 8000
 
+# 设置Python路径以确保模块导入正常工作
+ENV PYTHONPATH=/app
+
 # 启动 FastAPI 服务
 CMD uvicorn app.main:app --host 0.0.0.0 --port 8000

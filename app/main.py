@@ -2,7 +2,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
-from model_utils import ZeroShotClassifier
+from app.model_utils import ZeroShotClassifier
 
 app = FastAPI(
     title="Zero-Shot 中文文本分类 API",

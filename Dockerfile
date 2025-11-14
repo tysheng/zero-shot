@@ -14,6 +14,14 @@ WORKDIR /tmp
 # 注意：构建时需要提前将模型文件复制到项目的model_files目录中
 COPY ./model_files/ /tmp/model/
 
+# 确认模型文件已复制
+RUN if [ -f "/tmp/model/config.json" ]; then \
+      echo "✅ 模型文件已成功复制"; \
+    else \
+      echo "❌ 错误：模型文件复制失败，找不到 config.json"; \
+      exit 1; \
+    fi
+
 # Stage 2: 构建应用镜像
 FROM docker.m.daocloud.io/pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime
 

@@ -4,22 +4,31 @@
 
 ## 构建Docker镜像
 
-由于Hugging Face模型下载可能不稳定，本项目使用本地已下载的模型文件进行Docker构建。
+由于Hugging Face模型下载可能不稳定，本项目使用本地已下载的模型文件进行Docker构建。有两种方式构建镜像：
 
-### 1. 复制模型文件
+### 方法一：使用复制脚本（推荐）
 
-首先运行提供的脚本，将模型从本地缓存复制到项目临时目录：
+1. 首先运行提供的脚本，将模型从本地缓存复制到项目临时目录：
 
 ```bash
 ./copy_model_for_docker.sh
 ```
 
-这个脚本会将模型文件从`~/.cache/huggingface/hub/models--IDEA-CCNL--Erlangshen-Roberta-330M-NLI/snapshots/9ca8de565513d730f6a315337b8b0c0ae7833547/`复制到`./app/model_tmp/`目录。
+该脚本会将模型文件从本地 Hugging Face 缓存目录复制到项目中的临时目录。
 
-### 2. 构建Docker镜像
+2. 构建Docker镜像：
 
 ```bash
 docker build -t zero-shot-classifier .
+```
+
+### 方法二：直接指定模型路径
+
+如果方法一出现问题，可以直接在构建时指定模型路径：
+
+```bash
+# 替换为您实际的模型路径
+docker build -t zero-shot-classifier --build-arg MODEL_PATH="$HOME/.cache/huggingface/hub/models--IDEA-CCNL--Erlangshen-Roberta-330M-NLI/snapshots/9ca8de565513d730f6a315337b8b0c0ae7833547" .
 ```
 
 ### 3. 运行Docker容器

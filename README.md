@@ -53,14 +53,8 @@ docker build -t zero-shot-classifier .
 
 3. 运行Docker容器：
 
-**基本运行方式：**
 ```bash
-docker run -p 9966:8000 zero-shot-classifier
-```
-
-**增强运行方式（推荐）：**
-```bash
-# 使用增强版启动脚本，支持自动重启、自定义名称等
+# 使用增强版启动脚本，支持自动重启、指定名称等
 ./run-container.sh
 ```
 

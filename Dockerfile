@@ -2,7 +2,7 @@
 # Dockerfile
 
 # Stage 1: 准备模型文件
-FROM alpine:3.18 as model-prep
+FROM docker.m.daocloud.io/alpine:3.18 as model-prep
 
 # 创建模型目录
 RUN mkdir -p /tmp/model
